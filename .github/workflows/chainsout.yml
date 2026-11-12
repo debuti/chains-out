@@ -1,0 +1,171 @@
+name: chainsout
+
+on:
+  schedule:
+    # UTC (cada 3 h de 6 a 21).
+    # Si tras desactivar/reactivar el workflow el cron no vuelve, un push que toque
+    # este fichero lo registra de nuevo.
+    - cron: "0 6,9,12,15,18,21 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "Qué ejecutar"
+        type: choice
+        options: [run, test-notify, test-claude]
+        default: run
+
+concurrency:
+  group: chainsout
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: write # para "Mantener activo" (abajo)
+
+# Los logs de Actions de un repo público los ve cualquiera: cada paso pasa por
+# quiet.sh, que solo imprime recuentos. Cada secret se da solo al paso que lo usa.
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      CHAINSOUT_DB: chainsout.db
+      LLM_MODEL: ${{ vars.LLM_MODEL || 'claude-opus-5-5' }}
+      UMBRAL_MAYBE: ${{ vars.UMBRAL_MAYBE || '6' }}
+      # Interruptor general (variable del repo). También vale /pausar en Telegram.
+      CHAINSOUT_ENABLED: ${{ vars.CHAINSOUT_ENABLED || 'true' }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
+        with:
+          version: "0.13.7"
+
+      - name: Instalar
+        run: |
+          uv sync --frozen --no-dev -q
+          npm install -g --silent @anthropic-ai/claude-code@2.1.321
+          echo "CLAUDE_BIN=$(command -v claude)" >> "$GITHUB_ENV"
+
+      - name: Recuperar estado (base de datos cifrada)
+        uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: chainsout.db.enc
+          key: chainsout-db-${{ github.run_id }}
+          restore-keys: chainsout-db-
+
+      - name: Descifrar estado
+        env:
+          CHAINSOUT_DB_KEY: ${{ secrets.CHAINSOUT_DB_KEY }}
+        run: |
+          test -n "$CHAINSOUT_DB_KEY" || { echo "Falta el secret CHAINSOUT_DB_KEY"; exit 1; }
+          if [ -f chainsout.db.enc ]; then
+            openssl enc -d -aes-256-cbc -pbkdf2 -iter 200000 -in chainsout.db.enc \
+              -out chainsout.db -pass env:CHAINSOUT_DB_KEY
+            echo "estado recuperado"
+          else
+            echo "sin estado previo: se empieza de cero"
+          fi
+
+      - name: Prueba de Telegram
+        if: inputs.mode == 'test-notify'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          curl -sf -o /dev/null "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=✅ chainsout: GitHub Actions conectado" && echo enviado
+
+      - name: Prueba de Claude
+        if: inputs.mode == 'test-claude'
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          echo "Responde solo: ok" | "$CLAUDE_BIN" -p --model "$LLM_MODEL" --output-format json \
+            --tools "" --no-session-persistence 2>&1 \
+            | grep -oE '"(is_error|subtype|result)":("[^"]{0,160}"|true|false)' | head -n 3
+
+      - name: Feedback de Telegram
+        if: inputs.mode != 'test-notify' && inputs.mode != 'test-claude'
+        env:
+          CHAINSOUT_CONFIG: ${{ secrets.CHAINSOUT_CONFIG }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: .github/scripts/quiet.sh uv run --no-sync chainsout poll-feedback
+
+      - name: Descargar y prefiltrar
+        if: inputs.mode != 'test-notify' && inputs.mode != 'test-claude'
+        env:
+          CHAINSOUT_CONFIG: ${{ secrets.CHAINSOUT_CONFIG }}
+        run: .github/scripts/quiet.sh uv run --no-sync chainsout fetch
+
+      - name: Clasificar
+        id: classify
+        if: inputs.mode != 'test-notify' && inputs.mode != 'test-claude'
+        env:
+          CHAINSOUT_CONFIG: ${{ secrets.CHAINSOUT_CONFIG }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: .github/scripts/quiet.sh uv run --no-sync chainsout classify
+
+      - name: Notificar
+        if: inputs.mode != 'test-notify' && inputs.mode != 'test-claude'
+        env:
+          CHAINSOUT_CONFIG: ${{ secrets.CHAINSOUT_CONFIG }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: .github/scripts/quiet.sh uv run --no-sync chainsout notify --weekly
+
+      - name: Avisar si el token de Claude va a caducar
+        # Variable del repo CLAUDE_TOKEN_EXPIRES=AAAA-MM-DD (los de `claude setup-token` duran 1 año).
+        # Avisa una vez al día (en la ejecución de las 9 UTC) durante los últimos 30 días.
+        if: inputs.mode != 'test-notify' && inputs.mode != 'test-claude' && vars.CLAUDE_TOKEN_EXPIRES != ''
+        env:
+          EXPIRES: ${{ vars.CLAUDE_TOKEN_EXPIRES }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          left=$(( ( $(date -ud "$EXPIRES" +%s) - $(date -u +%s) ) / 86400 ))
+          echo "días hasta que caduque el token de Claude: $left"
+          if [ "$left" -le 30 ] && [ "$(date -u +%H)" = "09" ]; then
+            curl -sf -o /dev/null "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+              --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+              --data-urlencode "text=🔑 El token de Claude de chainsout caduca en ${left} días (${EXPIRES}). Renuévalo: claude setup-token → gh secret set CLAUDE_CODE_OAUTH_TOKEN, y actualiza la variable CLAUDE_TOKEN_EXPIRES." || true
+          fi
+
+      - name: Cifrar estado
+        if: always()
+        env:
+          CHAINSOUT_DB_KEY: ${{ secrets.CHAINSOUT_DB_KEY }}
+        run: |
+          if [ -f chainsout.db ] && [ -n "$CHAINSOUT_DB_KEY" ]; then
+            openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -in chainsout.db \
+              -out chainsout.db.enc -pass env:CHAINSOUT_DB_KEY
+          fi
+
+      - name: Guardar estado
+        if: always() && hashFiles('chainsout.db.enc') != ''
+        uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
+        with:
+          path: chainsout.db.enc
+          key: chainsout-db-${{ github.run_id }}
+
+      - name: Avisar del fallo por Telegram
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          FAILED_STEP: ${{ steps.classify.outcome == 'failure' && 'falló Clasificar' || '' }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -sf -o /dev/null "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=⚠️ chainsout falló en GitHub Actions (${FAILED_STEP:-ver enlace}). Si falla «Clasificar», casi seguro es el token de Claude caducado o revocado: claude setup-token → gh secret set CLAUDE_CODE_OAUTH_TOKEN. ${RUN_URL}" || true
+
+      # GitHub desactiva los workflows programados tras 60 días sin actividad en el
+      # repo; volver a habilitarlo reinicia esa cuenta atrás.
+      - name: Mantener activo
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/chainsout.yml/enable" || true

@@ -1,0 +1,26 @@
+# Ejemplo: Frontend senior (React/TypeScript) que vive en Lisboa.
+
+defaults:
+  hours_old: 24
+  results_wanted: 25
+  pause_seconds: [4, 9]
+
+terms:
+  - senior frontend engineer
+  - react developer
+  - typescript engineer
+  - design systems engineer
+
+sources:
+  linkedin: {enabled: true, locations: [Portugal, European Union, Remote]}
+  indeed: {enabled: true, countries: [portugal, spain]}
+  google: {enabled: false}
+  hn: {enabled: true, previous_thread_grace_days: 10}
+  companies: {enabled: false}   # sin companies.yaml en este ejemplo
+  boards:
+    enabled: true
+    boards:
+      remoteok: {enabled: true}
+      remotive: {enabled: true, category: software-dev, min_interval_hours: 8}
+      weworkremotely: {enabled: true, categories: [remote-front-end-programming-jobs, remote-full-stack-programming-jobs]}
+      himalayas: {enabled: true, country: Portugal, queries: [react, frontend, typescript]}

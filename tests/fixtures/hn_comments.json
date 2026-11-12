@@ -1,0 +1,47 @@
+[
+ {
+  "author": "AdriaanvRossum",
+  "children": [],
+  "created_at": "2026-11-02T16:01:43.000Z",
+  "created_at_i": 1793635303,
+  "id": 50338732,
+  "options": [],
+  "parent_id": 50338728,
+  "points": null,
+  "story_id": 50338728,
+  "text": "Simple Analytics | DevOps Engineer | REMOTE (worldwide, any timezone) | Full-time, 32h, 24h possible | \u20ac5,000&#x2F;month (full-time) | <a href=\"https:&#x2F;&#x2F;www.simpleanalytics.com&#x2F;jobs&#x2F;devops\" rel=\"nofollow\">https:&#x2F;&#x2F;www.simpleanalytics.com&#x2F;jobs&#x2F;devops</a><p>Hi HN, I&#x27;m Adriaan. Simple Analytics exists thanks to HN: it started with my Show HN in 2018 [1]. Today we&#x27;re a self-funded, profitable team of four building privacy-first analytics.<p>Privacy is why we run our own bare-metal servers instead of the cloud. We&#x27;re preparing for a LOT more traffic, and you&#x27;ll own the infrastructure and its reliability. We have good documentation. First project: leading the infra side of our Elasticsearch to ClickHouse migration, with Alex, our developer.<p>Stack: Ansible, OpenTofu, Docker Compose, Grafana, GitHub Actions, TypeScript. Clear async communication matters more than knowing every tool.<p>You can apply from your terminal:<p><pre><code>  curl https:&#x2F;&#x2F;www.simpleanalytics.com&#x2F;jobs&#x2F;devops.md\n</code></pre>\n[1] <a href=\"https:&#x2F;&#x2F;news.ycombinator.com&#x2F;item?id=18024277\">https:&#x2F;&#x2F;news.ycombinator.com&#x2F;item?id=18024277</a>",
+  "title": null,
+  "type": "comment",
+  "url": null
+ },
+ {
+  "author": "sadiq",
+  "children": [],
+  "created_at": "2026-11-02T16:03:23.000Z",
+  "created_at_i": 1793635403,
+  "id": 50338768,
+  "options": [],
+  "parent_id": 50338728,
+  "points": null,
+  "story_id": 50338728,
+  "text": "University of Cambridge, University of Manchester | PhD in AI &#x2F; Earth Observation &#x2F; Environmental Science | ONSITE | UK home fee status only | \u00a330k tax-free annual stipend<p>Our group at Cambridge works on Earth Observation foundation models (Tessera: v1 <a href=\"https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2506.20380\" rel=\"nofollow\">https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2506.20380</a>, v2 <a href=\"https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2607.03949\" rel=\"nofollow\">https:&#x2F;&#x2F;arxiv.org&#x2F;abs&#x2F;2607.03949</a>, <a href=\"https:&#x2F;&#x2F;geotessera.org&#x2F;\" rel=\"nofollow\">https:&#x2F;&#x2F;geotessera.org&#x2F;</a>) and we&#x27;ve started a collaboration with Manchester to understand how they can be used to improve pollution models and then environmental decision making in general. This involves training new models and doing high-resolution inference across national or even global scales, as well as figuring out how to use that data to help policymakers make better decisions.<p>As part of this work we have a PhD studentship through the joint Manchester-Cambridge Centre for Doctoral Training for AI in Decision Making for Complex Systems. This involves one year at Manchester doing taught postgraduate study and then three years at Cambridge for the PhD.<p>Our work is all open source and involves solving significant compute and data challenges. Training our current-generation model takes ~250k GPU hours and a single year of global inference needs to move over 5.5 petabytes of data through the inference pipeline. This project would suit someone with strong machine learning and software engineering experience. We can help you build the atmospheric science and Earth Observation skills.<p>We are a highly collaborative group who spend our time not only on foundational research but also on developing applications with practitioners and decision makers. Our work sees use in many industrial, academic and government environments for problems like crop classification, tree species mapping and change detection.<p>You can find out more here: <a href=\"https:&#x2F;&#x2F;www.findaphd.com&#x2F;phds&#x2F;project&#x2F;from-satellite-to-street-earth-embeddings-for-local-environmental-decisions&#x2F;?p200576\" rel=\"nofollow\">https:&#x2F;&#x2F;www.findaphd.com&#x2F;phds&#x2F;project&#x2F;from-satellite-to-stre...</a> - if you have questions about the project you can contact me, Sadiq Jaffer, at sj514@cam.ac.uk . For questions about the application process you&#x27;ll want aidecisionscdt@manchester.ac.uk .<p>Application deadline is Friday 4th of December with a course start date of September 2027.",
+  "title": null,
+  "type": "comment",
+  "url": null
+ },
+ {
+  "author": "m00dy",
+  "children": [],
+  "created_at": "2026-11-03T07:11:28.000Z",
+  "created_at_i": 1793689888,
+  "id": 50349000,
+  "options": [],
+  "parent_id": 50338728,
+  "points": null,
+  "story_id": 50338728,
+  "text": "Blockrotate| Senior Systems &#x2F; Rust Engineer | Remote (US&#x2F;EU timezones preferred) | Full-time | $130k - $170k + Equity<p>Blockrotate (<a href=\"https:&#x2F;&#x2F;blockrotate.com\" rel=\"nofollow\">https:&#x2F;&#x2F;blockrotate.com</a>) builds low-latency copy-trading and execution infrastructure for Polymarket and prediction markets.<p>Copy trading on prediction markets has strange market microstructure. Unlike deep perp DEXes (Binance, Hyperliquid), Polymarket orderbooks are bounded, often thin, and subject to severe adverse selection. When a high-volume leader buys, the book moves immediately. If followers lag by a few hundred milliseconds, or if a platform taxes every order with a 50bps fee, follower alpha drops to zero.<p>Most existing tools in this space either hit users with high per-trade taker fees or ask them to export and paste their master private key into a database. We took a different approach: isolated per-bot deposit wallets (non-custodial via EIP-1967&#x2F;1271 proxies) and co-located autonomous Rust workers running delta-sync loops directly against the Polymarket CLOB.<p>Stack:<p>- Backend: Rust, Tokio, Axum, Protobuf over WebSockets, SQLite (WAL mode)<p>- Trading Engine: Custom Polymarket CLOB &amp; Data API clients, EIP-712 signing, dynamic slippage ladders, momentum filters, circuit breakers<p>- Frontend: Next.js 16, React 19, TypeScript, Tailwind CSS<p>What you\u2019d actually work on:<p>- Squeezing latency out of the execution hot path (delta position calculation, order placement, nonce handling, fill verification).<p>- Building better execution protection: momentum filters to dodge toxic order flow, fill stabilization windows, and handling thin book liquidity without moving the market against yourself.<p>- Scaling worker orchestration: our C2 server talks Protobuf to distributed bot workers with monotonic sequence IDs and autonomous reconnect failover. As bot volume scales, we need to keep state reconciliation bulletproof.<p>- Investigating and exploiting prediction market quirks (rebate structures, orderbook snapshotting, MEV&#x2F;relayer bottlenecks).<p>What we look for:<p>- Strong async Rust experience (Tokio, concurrency, practical memory management).<p>- Experience dealing with websockets, exchange orderbooks, or trading infrastructure<p>shoot an email to jobs@blockrotate.com and tell us why you would be a good fit for us.",
+  "title": null,
+  "type": "comment",
+  "url": null
+ }
+]

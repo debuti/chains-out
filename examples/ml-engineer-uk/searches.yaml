@@ -1,0 +1,26 @@
+# Ejemplo: ML engineer en Mánchester.
+
+defaults:
+  hours_old: 24
+  results_wanted: 25
+  pause_seconds: [4, 9]
+
+terms:
+  - machine learning engineer
+  - mlops engineer
+  - llm engineer
+  - applied scientist
+
+sources:
+  linkedin: {enabled: true, locations: [United Kingdom, Remote]}
+  indeed: {enabled: true, countries: [uk]}
+  google: {enabled: false}
+  hn: {enabled: true, previous_thread_grace_days: 10}
+  companies: {enabled: false}   # sin companies.yaml en este ejemplo
+  boards:
+    enabled: true
+    boards:
+      remoteok: {enabled: true}
+      remotive: {enabled: true, category: software-dev, min_interval_hours: 8}
+      weworkremotely: {enabled: true, categories: [remote-programming-jobs]}
+      himalayas: {enabled: true, country: United Kingdom, queries: [machine learning, mlops, llm]}

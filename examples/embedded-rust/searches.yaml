@@ -1,0 +1,56 @@
+# Búsquedas: términos × ubicaciones × fuentes.
+
+defaults:
+  hours_old: 24          # ventana de antigüedad (el cron va cada 3 h; la dedup evita repes)
+  results_wanted: 25     # por combinación término × ubicación
+  pause_seconds: [4, 9]  # pausa aleatoria entre peticiones
+
+terms:
+  - embedded rust
+  - rust firmware
+  - firmware engineer
+  - embedded software engineer
+  - bare metal
+  - embedded linux
+  - low level rust
+  - RTOS
+  - device driver
+
+sources:
+  linkedin:
+    enabled: true
+    # LinkedIn ignora is_remote/job_type en JobSpy: el filtro lo hacen prefiltro + LLM.
+    locations: [Spain, European Union, United Kingdom, Germany, Netherlands, Remote]
+  indeed:
+    enabled: true
+    # Indeed va por país (country_indeed); se busca con is_remote + fulltime.
+    countries: [spain, uk, germany, netherlands]
+  google:
+    # Google Jobs vía JobSpy es poco fiable; desactivado por defecto.
+    enabled: false
+    locations: [Europe]
+  hn:
+    enabled: true
+    # Hilos "Who is hiring?" a revisar (el actual y, si hace menos de N días que salió, el anterior).
+    previous_thread_grace_days: 10
+    # Solo comentarios que mencionen esto (regex); sin keywords pasan todos al prefiltro.
+    keywords: '\brust\b|embedded|firmware|bare.?metal|\brtos\b|zephyr|kernel|device drivers?'
+  companies:
+    # Páginas de empleo de empresas (Greenhouse/Lever/Ashby). Lista en companies.yaml.
+    enabled: true
+    file: companies.yaml
+  boards:
+    # Bolsas de empleo remoto con API/RSS pública. Se filtran por título con estas keywords.
+    enabled: true
+    keywords: '\brust\b|embedded|firmware|bare.?metal|\brtos\b|zephyr|kernel|device drivers?|low.?level|bootloader|microcontroller'
+    boards:
+      remoteok: {enabled: true}
+      # Remotive pide no consultar su API más de unas pocas veces al día.
+      remotive: {enabled: true, category: software-dev, min_interval_hours: 8}
+      weworkremotely:
+        enabled: true
+        categories: [remote-programming-jobs, remote-devops-sysadmin-jobs]
+      himalayas:
+        enabled: true
+        country: Spain        # incluye las abiertas a España (y las worldwide)
+        queries: [firmware, embedded, embedded rust, rust, kernel, embedded linux]

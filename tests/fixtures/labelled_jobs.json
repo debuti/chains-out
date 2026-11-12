@@ -1,0 +1,152 @@
+[
+ {
+  "expected": "positive",
+  "why": "Rust embebido, remoto UE con EOR en España, banda que supera 140k",
+  "source": "labelled",
+  "url": "https://example.test/1",
+  "title": "Senior Embedded Rust Engineer",
+  "company": "Ferrite Labs",
+  "location": "Remote (EU)",
+  "description": "We build battery management firmware in Rust (no_std, embassy) for STM32 and nRF52. Fully remote team across Europe; we hire employees via our EOR partner in any EU country, including Spain. Salary: €130,000–€160,000 + equity. Full-time."
+ },
+ {
+  "expected": "positive",
+  "why": "Firmware staff, remoto Europa vía Deel, salario USD alto",
+  "source": "labelled",
+  "url": "https://example.test/2",
+  "title": "Staff Firmware Engineer (Zephyr)",
+  "company": "Northwind Devices Inc.",
+  "location": "Remote - US or Europe",
+  "description": "US-based IoT company. Remote across the US and Europe (we use Deel for contractors/employees in Europe). C and Zephyr RTOS on Nordic SoCs, BLE stack, OTA bootloader (MCUboot). Compensation $190k–$240k. Full-time."
+ },
+ {
+  "expected": "positive",
+  "why": "Kernel, remoto EMEA, salario no publicado (debe quedar maybe/match, no reject)",
+  "source": "labelled",
+  "url": "https://example.test/3",
+  "title": "Senior Linux Kernel Engineer",
+  "company": "Kernelworks",
+  "location": "Remote, anywhere in EMEA",
+  "description": "Upstream Linux kernel development: device drivers for ARM SoCs, DMA, power management. Fully remote, hire in any EMEA country as employee or contractor. Senior level. Salary not disclosed. Full-time."
+ },
+ {
+  "expected": "reject",
+  "why": "Salario publicado por debajo de 140k (salary_below)",
+  "source": "labelled",
+  "url": "https://example.test/4",
+  "title": "Embedded Software Engineer (C/C++, RTOS)",
+  "company": "Medisense GmbH",
+  "location": "Remote (Germany, Spain, Portugal)",
+  "description": "Develop firmware for class II medical devices on ARM Cortex-M with FreeRTOS. 100% remote within Germany, Spain or Portugal. Full-time permanent. Salary range €85,000–€110,000."
+ },
+ {
+  "expected": "positive",
+  "why": "Hipervisor en Rust, remoto Europa incluye España, principal en empresa bien financiada",
+  "source": "labelled",
+  "url": "https://example.test/5",
+  "title": "Principal Hypervisor Engineer (Rust)",
+  "company": "Cloudvisor",
+  "location": "Remote — Europe (CET ±2h)",
+  "description": "Write a type-1 hypervisor in Rust for aarch64 and x86, bare metal bring-up, virtio. Remote within Europe, CET ±2h; we hire employees in Spain, Germany, Poland and UK. Principal level, US-funded series C. Full-time."
+ },
+ {
+  "expected": "reject",
+  "why": "Híbrido encubierto (2 días en Múnich)",
+  "source": "labelled",
+  "url": "https://example.test/6",
+  "title": "Senior Embedded Engineer — Remote (EU)",
+  "company": "Bavarian Motion",
+  "location": "Munich, Germany (Remote)",
+  "description": "We are a remote-first company. Embedded C++ on automotive ECUs, AUTOSAR. You'll join our Munich office two days a week to collaborate with the hardware team. Full-time, €95k–€120k."
+ },
+ {
+  "expected": "reject",
+  "why": "Oficina una semana al mes + residencia en NL",
+  "source": "labelled",
+  "url": "https://example.test/7",
+  "title": "Firmware Engineer",
+  "company": "Dutch Drones BV",
+  "location": "Remote / Eindhoven",
+  "description": "Firmware for flight controllers in C. Remote-friendly: we expect you in our Eindhoven office at least one week per month. Must live in the Netherlands. Full-time."
+ },
+ {
+  "expected": "reject",
+  "why": "US only",
+  "source": "labelled",
+  "url": "https://example.test/8",
+  "title": "Senior Embedded Rust Engineer",
+  "company": "Patriot Robotics",
+  "location": "Remote (US)",
+  "description": "Embedded Rust on robots. Remote within the United States only; must be authorized to work in the US without sponsorship. ITAR: US persons only. $180k–$220k."
+ },
+ {
+  "expected": "reject",
+  "why": "'EU remote' restringido a Alemania",
+  "source": "labelled",
+  "url": "https://example.test/9",
+  "title": "Firmware Engineer, Remote — Europe",
+  "company": "Rhein Systems",
+  "location": "Remote — Europe",
+  "description": "Firmware engineer for industrial sensors (C, bare metal). Candidates must be based in Germany and have the right to work in Germany. Full-time."
+ },
+ {
+  "expected": "reject",
+  "why": "UK right to work sin EOR, y salario bajo",
+  "source": "labelled",
+  "url": "https://example.test/10",
+  "title": "Embedded Developer",
+  "company": "Thames IoT Ltd",
+  "location": "Remote (UK)",
+  "description": "Embedded C on ESP32. Fully remote within the UK. You must have the right to work in the UK; we cannot sponsor and do not use EOR or contractors. £70k–£85k."
+ },
+ {
+  "expected": "reject",
+  "why": "Rust backend, no embebido",
+  "source": "labelled",
+  "url": "https://example.test/11",
+  "title": "Senior Rust Engineer",
+  "company": "PayStream",
+  "location": "Remote (EMEA)",
+  "description": "Build our high-throughput payments API in Rust: Tokio, Axum, Postgres, Kafka, Kubernetes on AWS. Fully remote in EMEA, €150k–€180k."
+ },
+ {
+  "expected": "reject",
+  "why": "Rust blockchain, no embebido",
+  "source": "labelled",
+  "url": "https://example.test/12",
+  "title": "Rust Developer — Blockchain",
+  "company": "ChainForge",
+  "location": "Remote (worldwide)",
+  "description": "Smart contracts and validator nodes in Rust for our L1 blockchain. Remote worldwide. $200k + tokens."
+ },
+ {
+  "expected": "reject",
+  "why": "Part-time",
+  "source": "labelled",
+  "url": "https://example.test/13",
+  "title": "Embedded Rust Engineer (part-time, 20h/week)",
+  "company": "Tiny Sensors",
+  "location": "Remote (EU)",
+  "description": "Part-time role, 20 hours per week, embedded Rust on RP2040. Fully remote in the EU."
+ },
+ {
+  "expected": "positive",
+  "why": "Cumple lo duro; salario dudoso → maybe ~6 (positivo si score >= 6)",
+  "source": "labelled",
+  "url": "https://example.test/14",
+  "title": "Embedded Rust Developer",
+  "company": "Seedling Robotics",
+  "location": "Remote (EU)",
+  "description": "Seed-stage startup of 8 people. Embedded Rust (embassy) on nRF. Fully remote, we hire through Deel in any EU country. No salary listed. Full-time."
+ },
+ {
+  "expected": "positive",
+  "why": "Remoto sin alcance claro, Europa probable; debe quedar maybe, no reject",
+  "source": "labelled",
+  "url": "https://example.test/15",
+  "title": "Senior Firmware Engineer",
+  "company": "Orbital Edge",
+  "location": "Remote",
+  "description": "Satellite on-board software in C/C++ and Rust on radiation-hardened MCUs. We are a fully remote company with team members across Europe. Full-time. Competitive salary."
+ }
+]

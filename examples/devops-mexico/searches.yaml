@@ -1,0 +1,26 @@
+# Ejemplo: DevOps/SRE en Ciudad de México, para empresas de EE. UU..
+
+defaults:
+  hours_old: 24
+  results_wanted: 25
+  pause_seconds: [4, 9]
+
+terms:
+  - devops engineer
+  - site reliability engineer
+  - platform engineer
+  - kubernetes
+
+sources:
+  linkedin: {enabled: true, locations: [Mexico, Latin America, Remote]}
+  indeed: {enabled: true, countries: [mexico, usa]}
+  google: {enabled: false}
+  hn: {enabled: true, previous_thread_grace_days: 10}
+  companies: {enabled: false}   # sin companies.yaml en este ejemplo
+  boards:
+    enabled: true
+    boards:
+      remoteok: {enabled: true}
+      remotive: {enabled: true, category: software-dev, min_interval_hours: 8}
+      weworkremotely: {enabled: true, categories: [remote-devops-sysadmin-jobs]}
+      himalayas: {enabled: true, country: Mexico, queries: [devops, sre, kubernetes]}

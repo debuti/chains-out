@@ -1,0 +1,29 @@
+# Empresas cuyas páginas de empleo se consultan directamente (APIs JSON públicas del ATS).
+# ats: greenhouse | lever | ashby. token: el identificador de la URL pública del tablero:
+#   greenhouse → boards.greenhouse.io/<token>   lever → jobs.lever.co/<token>
+#   ashby      → jobs.ashbyhq.com/<token>
+# Se quedan solo las ofertas cuyo título encaja con title_regex (dominio) y publicadas hace
+# menos de max_age_days; las marcadas explícitamente como onsite/hybrid se descartan.
+# Tokens comprobados contra los endpoints reales el 2026-11-12.
+
+max_age_days: 60
+# Opcional; sin title_regex pasan todas al prefiltro.
+title_regex: 'firmware|embedded|kernel|driver|\brust\b|low.?level|\bbsp\b|bootloader|\brtos\b|bare.?metal|hypervisor|systems? software|linux|platform software|microcontroller|uefi'
+
+companies:
+  # Embebido / sistemas en Europa
+  - {name: Toradex, ats: greenhouse, token: toradex}             # módulos embebidos (Suiza)
+  - {name: Proton, ats: greenhouse, token: proton}
+  - {name: Ledger, ats: ashby, token: ledger}                    # firmware de wallets (Francia)
+  - {name: SatoshiLabs (Trezor), ats: ashby, token: satoshilabs} # firmware Rust/C (Praga)
+  - {name: Axelera AI, ats: ashby, token: axelera}               # chips de IA (NL/BE)
+  - {name: ICEYE, ats: ashby, token: iceye}                      # satélites (Finlandia)
+  - {name: Wayve, ats: ashby, token: wayve}
+  - {name: Oxa, ats: ashby, token: oxa}
+  - {name: Foxglove, ats: ashby, token: foxglove}                # herramientas de robótica
+  - {name: Graphcore, ats: greenhouse, token: graphcore}
+  # EE. UU. con algún puesto remoto / bandas altas
+  - {name: Tenstorrent, ats: greenhouse, token: tenstorrent}
+  - {name: Samsara, ats: greenhouse, token: samsara}
+  - {name: Skydio, ats: ashby, token: skydio}
+  - {name: Flock Safety, ats: ashby, token: flock}

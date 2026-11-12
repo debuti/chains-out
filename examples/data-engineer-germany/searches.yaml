@@ -1,0 +1,26 @@
+# Ejemplo: Ingeniero de datos con base en Berlín.
+
+defaults:
+  hours_old: 24
+  results_wanted: 25
+  pause_seconds: [4, 9]
+
+terms:
+  - data engineer
+  - analytics engineer
+  - dataplattform
+  - streaming engineer
+
+sources:
+  linkedin: {enabled: true, locations: [Berlin, Germany]}
+  indeed: {enabled: true, countries: [germany]}
+  google: {enabled: false}
+  hn: {enabled: true, previous_thread_grace_days: 10}
+  companies: {enabled: false}   # sin companies.yaml en este ejemplo
+  boards:
+    enabled: true
+    boards:
+      remoteok: {enabled: true}
+      remotive: {enabled: true, category: software-dev, min_interval_hours: 8}
+      weworkremotely: {enabled: true, categories: [remote-programming-jobs]}
+      himalayas: {enabled: true, country: Germany, queries: [data engineer, dbt, spark]}

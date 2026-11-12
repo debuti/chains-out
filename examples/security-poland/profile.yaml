@@ -1,0 +1,57 @@
+# Ejemplo: Pentester/AppSec en Polonia.
+# El texto de `criteria` va tal cual al prompt del clasificador; `prefilter` son reglas baratas.
+
+candidate:
+  residence: Polonia (Cracovia); trabaja con contrato B2B
+  languages: [polaco, inglés]
+
+salary_threshold: 25k PLN netos al mes (B2B)
+
+criteria:
+  - id: full_time
+    type: hard
+    text: >-
+      Jornada completa; se acepta B2B.
+  - id: remote
+    type: hard
+    text: >-
+      Remoto desde Polonia o desde cualquier lugar de la UE.
+  - id: domain
+    type: hard
+    text: >-
+      Seguridad ofensiva y AppSec: pentesting, red team, revisión de código y seguridad cloud.
+      Descartar SOC L1, GRC y ventas.
+  - id: certs
+    type: preference
+    text: >-
+      Suman las ofertas que valoran OSCP/OSWE y las que tienen programa de bug bounty propio.
+  - id: salary
+    type: almost_hard
+    text: >-
+      Más de 25k PLN netos al mes como B2B (o su equivalente en EUR).
+
+scoring:
+  bias: >-
+    Ante la duda, "maybe" con nota media antes que "reject".
+
+company_reject:
+  - '\bhooli\b'
+
+prefilter:
+  title_reject:
+    - '\bintern(ship)?\b'
+    - '\bsoc (analyst|l1)\b'
+    - '\bgrc\b'
+    - '\bsales\b'
+  job_type_reject: [parttime, internship, temporary]
+  domain_any:
+    - 'pentest'
+    - 'penetration test'
+    - 'red team'
+    - '\bappsec\b'
+    - 'application security'
+    - 'offensive security'
+  remote_any:
+    - 'remote'
+    - 'anywhere'
+    - 'zdaln'

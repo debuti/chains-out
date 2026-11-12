@@ -1,0 +1,57 @@
+# Ejemplo: ML engineer en Mánchester.
+# El texto de `criteria` va tal cual al prompt del clasificador; `prefilter` son reglas baratas.
+
+candidate:
+  residence: Reino Unido (Mánchester), con derecho a trabajar en UK
+  languages: [inglés]
+
+salary_threshold: 95k GBP brutos anuales
+
+criteria:
+  - id: full_time
+    type: hard
+    text: >-
+      Jornada completa.
+  - id: remote
+    type: hard
+    text: >-
+      Remoto en UK. Se acepta ir a Londres como mucho una vez al mes.
+  - id: domain
+    type: hard
+    text: >-
+      ML engineering aplicado: entrenar y servir modelos, MLOps, LLMs en producción. Descartar
+      investigación pura que exija PhD y puestos de solo análisis de datos.
+  - id: stack
+    type: preference
+    text: >-
+      Suman PyTorch, inferencia optimizada y evaluación de modelos.
+  - id: salary
+    type: almost_hard
+    text: >-
+      Salario > 95k GBP brutos anuales.
+
+scoring:
+  bias: >-
+    Ante la duda, "maybe" con nota media antes que "reject".
+
+company_reject:
+  - '\bumbrella corp\b'
+
+prefilter:
+  title_reject:
+    - '\bintern(ship)?\b'
+    - '\bphd\b'
+    - '\bgraduate\b'
+    - '\bdata analyst\b'
+  job_type_reject: [parttime, internship, temporary]
+  domain_any:
+    - 'machine learning'
+    - '\bml\b'
+    - '\bmlops\b'
+    - '\bllm'
+    - '\bpytorch\b'
+    - '\binference\b'
+  remote_any:
+    - 'remote'
+    - 'work from home'
+    - 'wfh'

@@ -1,0 +1,64 @@
+# Ejemplo: Frontend senior (React/TypeScript) que vive en Lisboa.
+# El texto de `criteria` va tal cual al prompt del clasificador; `prefilter` son reglas baratas.
+
+candidate:
+  residence: Portugal (Lisboa); acepta viajar a Europa unas semanas al año
+  languages: [portugués, inglés, español]
+
+salary_threshold: 65k EUR brutos anuales
+
+criteria:
+  - id: full_time
+    type: hard
+    text: >-
+      Jornada completa. Descartar freelance por horas y prácticas.
+  - id: remote
+    type: hard
+    text: >-
+      Remoto desde Portugal. Se acepta híbrido solo si la oficina está en Lisboa.
+  - id: eligibility
+    type: hard
+    text: >-
+      Descartar ofertas restringidas a EE. UU., Canadá o Reino Unido sin opción de contractor o
+      EOR.
+  - id: domain
+    type: hard
+    text: >-
+      Frontend de producto: React, TypeScript, Next.js, design systems y accesibilidad. Descartar
+      puestos solo de backend, data o mobile nativo.
+  - id: stack
+    type: preference
+    text: >-
+      Suman: TypeScript estricto, testing (Playwright/Vitest), rendimiento web y accesibilidad
+      (WCAG).
+  - id: salary
+    type: almost_hard
+    text: >-
+      Salario > 65k EUR brutos anuales. Si no lo publican, estima por seniority y tipo de empresa.
+
+scoring:
+  bias: >-
+    Ante la duda, "maybe" con nota media antes que "reject".
+
+company_reject:
+  - '\bfoobar consulting\b'
+
+prefilter:
+  title_reject:
+    - '\bintern(ship)?\b'
+    - '\bjunior\b'
+    - '\bbackend\b'
+    - '\b(ios|android)\b'
+    - '\bsales\b'
+  job_type_reject: [parttime, internship, temporary]
+  domain_any:
+    - '\breact\b'
+    - '\btypescript\b'
+    - 'front[- ]?end'
+    - '\bnext\.?js\b'
+    - 'design system'
+  remote_any:
+    - 'remote'
+    - 'anywhere'
+    - 'lisbo[an]'
+    - 'trabalho remoto'

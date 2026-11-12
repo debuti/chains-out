@@ -1,0 +1,59 @@
+# Ejemplo: DevOps/SRE en Ciudad de México, para empresas de EE. UU..
+# El texto de `criteria` va tal cual al prompt del clasificador; `prefilter` son reglas baratas.
+
+candidate:
+  residence: México (CDMX), zona horaria UTC-6
+  languages: [español, inglés]
+
+salary_threshold: 90k USD anuales (o tarifa equivalente)
+
+criteria:
+  - id: full_time
+    type: hard
+    text: >-
+      Jornada completa, como empleado o contractor a largo plazo.
+  - id: remote
+    type: hard
+    text: >-
+      100 % remoto con solape horario con EE. UU. Descartar "US only" que exija residir allí.
+  - id: domain
+    type: hard
+    text: >-
+      DevOps/SRE/platform: Kubernetes, Terraform, AWS/GCP, CI/CD y observabilidad. Descartar
+      soporte IT y helpdesk.
+  - id: oncall
+    type: preference
+    text: >-
+      Penalizar guardias 24/7 sin compensación.
+  - id: salary
+    type: almost_hard
+    text: >-
+      Salario > 90k USD anuales (o tarifa equivalente como contractor).
+
+scoring:
+  bias: >-
+    Ante la duda, "maybe" con nota media antes que "reject".
+
+company_reject:
+  - '\binitrode\b'
+
+prefilter:
+  title_reject:
+    - '\bintern(ship)?\b'
+    - '\bhelp ?desk\b'
+    - '\bit support\b'
+    - '\bjunior\b'
+  job_type_reject: [parttime, internship, temporary]
+  domain_any:
+    - '\bkubernetes\b'
+    - '\bk8s\b'
+    - '\bterraform\b'
+    - '\bdevops\b'
+    - '\bsre\b'
+    - 'site reliability'
+    - 'platform engineer'
+  remote_any:
+    - 'remote'
+    - 'anywhere'
+    - 'latam'
+    - 'remoto'

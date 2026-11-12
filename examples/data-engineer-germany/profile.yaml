@@ -1,0 +1,57 @@
+# Ejemplo: Ingeniero de datos con base en Berlín.
+# El texto de `criteria` va tal cual al prompt del clasificador; `prefilter` son reglas baratas.
+
+candidate:
+  residence: Alemania (Berlín)
+  languages: [alemán, inglés]
+
+salary_threshold: 85k EUR brutos anuales
+
+criteria:
+  - id: full_time
+    type: hard
+    text: >-
+      Jornada completa; acepta 32-36 h/semana si el sueldo es proporcional.
+  - id: location
+    type: hard
+    text: >-
+      Remoto en Alemania o híbrido en Berlín (máx. 2 días de oficina). Descartar presencial fuera
+      de Berlín.
+  - id: domain
+    type: hard
+    text: >-
+      Data engineering: pipelines, Spark, dbt, Airflow/Dagster, Kafka, data warehouses (Snowflake,
+      BigQuery). Descartar puestos de BI/reporting puros y de data science.
+  - id: stack
+    type: preference
+    text: >-
+      Suman Python y SQL avanzado, y experiencia con streaming.
+  - id: salary
+    type: almost_hard
+    text: >-
+      Salario > 85k EUR brutos anuales.
+
+scoring:
+  bias: >-
+    Ante la duda, "maybe" con nota media antes que "reject".
+
+company_reject:
+  - '\bglobex\b'
+
+prefilter:
+  title_reject:
+    - '\bwerkstudent'
+    - '\bpraktik'
+    - '\bjunior\b'
+    - '\bbi (analyst|developer)\b'
+    - '\bdata scientist\b'
+  job_type_reject: [parttime, internship, temporary]
+  domain_any:
+    - 'data engineer'
+    - '\bspark\b'
+    - '\bdbt\b'
+    - '\bairflow\b'
+    - '\bkafka\b'
+    - '\bdagster\b'
+    - '\bsnowflake\b'
+  # Sin remote_any: también valen ofertas presenciales o híbridas (las juzga el LLM).

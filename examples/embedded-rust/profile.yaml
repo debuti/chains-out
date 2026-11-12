@@ -1,0 +1,140 @@
+# Perfil de búsqueda: fuente de verdad del filtro.
+# El texto de `criteria` va tal cual al prompt del clasificador; `prefilter` son reglas baratas
+# que se aplican antes de gastar cuota del LLM (deben pecar de dejar pasar).
+
+candidate:
+  residence: España (no se muda)
+  languages: [español, inglés]
+
+# Umbral para salary.meets_threshold (texto libre: cifra, moneda, bruto/neto).
+salary_threshold: 140k EUR/GBP brutos anuales
+
+criteria:
+  - id: full_time
+    type: hard
+    text: >-
+      Jornada completa. Descartar part-time, freelance de pocas horas, prácticas/becas/internships,
+      Werkstudent.
+  - id: full_remote
+    type: hard
+    text: >-
+      Full remote. Descartar híbrido, "remote" con días de oficina obligatorios (aunque sean pocos
+      al mes), y "remote" que exige reubicarse. Viajes ocasionales (offsites trimestrales) se
+      aceptan, pero se mencionan como aviso.
+  - id: residence_spain
+    type: hard
+    text: >-
+      El candidato vive en España y no se muda. Descartar "remote US only", "remote UK, right to
+      work required" sin opción EOR/contractor, "remote within Germany", "must be based in X" (si X
+      no es España ni una región que la incluya), etc. Aceptar "remote EU/EMEA/Europe/worldwide",
+      "CET ±2h" y las que contratan en España (empleado, EOR o contractor).
+  - id: employer_country
+    type: hard
+    text: >-
+      Empleador de la UE o del Reino Unido, o empresas de fuera (p. ej. EE. UU.) que contraten en
+      la UE/España.
+  - id: domain
+    type: hard
+    text: >-
+      Dominio: firmware, embedded, low level, bare metal, RTOS, drivers, kernel, sistemas operativos,
+      hipervisores, bootloaders. Descartar backend/web/cloud/blockchain/data aunque usen Rust.
+      Herramientas de sistemas muy cercanas al hardware (toolchains embebidos, compiladores para
+      MCUs, emuladores de hardware) cuentan como dominio válido.
+  - id: rust
+    type: preference
+    text: >-
+      Rust suma nota (mejor si es no_std/embedded). C/C++ embebido también vale, con algo menos
+      de nota.
+  - id: salary
+    type: almost_hard
+    text: >-
+      Salario > 140k EUR/GBP brutos anuales. Si lo publican y el máximo de la banda es menor →
+      descartar (hard_fail salary_below). Si no lo publican → NO descartar: estima la probabilidad
+      de que supere 140k (seniority, tipo y tamaño de empresa, empresa de EE. UU. que paga bandas
+      de EE. UU., financiación, sector) y márcalo como estimado.
+
+scoring:
+  # Notificar si decision == match, o si decision == maybe y score >= UMBRAL_MAYBE (.env).
+  bias: >-
+    El volumen esperado es bajo (pocas ofertas a la semana): ante la duda, usa "maybe" con nota
+    media antes que "reject". Reserva "reject" para ofertas que incumplen claramente un criterio
+    duro.
+  guide: >-
+    9-10 embedded Rust full remote con salario alto; 7-8 encaja bien con alguna duda menor o es
+    C/C++ embebido.
+
+# Casos límite propios de este perfil (se añaden a los genéricos del prompt).
+edge_cases:
+  - >-
+    "Senior Rust Engineer (remote EMEA): build our high-throughput payments API on Kubernetes,
+    Tokio, Postgres." → Rust, pero es backend: `reject`, `domain_fit: no`,
+    `hard_fails: ["domain"]`.
+  - >-
+    "Staff Firmware Engineer (C, Zephyr), Remote, US or Europe. US company, compensation
+    $190k-$240k." → `match`: el salario publicado en USD supera el umbral; score 8.
+
+# Empresas excluidas: regex (sin distinguir mayúsculas) contra el nombre de la empresa.
+# Se descartan antes del LLM y nunca se notifican.
+company_reject:
+  - '\bacme corp\b'
+  - 'initech'
+
+prefilter:
+  # Si el TÍTULO contiene alguna de estas (regex, sin distinguir mayúsculas) → descartada.
+  title_reject:
+    - '\bintern(ship)?\b'
+    - '\bpraktik'
+    - '\bwerkstudent'
+    - '\bworking student\b'
+    - '\btrainee\b'
+    - '\bgraduate\b'
+    - '\bco-?op\b'
+    - '\bapprentice'
+    - '\bpart[- ]?time\b'
+    - '\bteilzeit\b'
+    - '\bfront[- ]?end\b'
+    - '\bfull[- ]?stack\b'
+    - '\bweb (developer|engineer)\b'
+    - '\b(data|ml) (scientist|analyst)\b'
+    - '\bsales\b'
+    - '\brecruit'
+    - '\baccount (manager|executive)\b'
+    - '\bmarketing\b'
+    - '\btechnician\b'
+    - '\bmechanical engineer\b'
+    - '\bphd\b'
+    - '\bthesis\b'
+  # Tipos de jornada explícitos que descartan.
+  job_type_reject: [parttime, internship, temporary]
+  # Debe aparecer al menos una en título + descripción (regex). Si no hay descripción, basta el título.
+  domain_any:
+    - '\brust\b'
+    - '\bembedded\b'
+    - '\bfirmware\b'
+    - 'bare[- ]?metal'
+    - '\brtos\b'
+    - '\bfreertos\b'
+    - '\bzephyr\b'
+    - '\bkernel\b'
+    - '\bdevice drivers?\b'
+    - '\bdrivers?\b'
+    - 'low[- ]?level'
+    - '\bmicrocontroller'
+    - '\bmcus?\b'
+    - '\bbootloader'
+    - '\bhypervisor'
+    - '\bsystems? (software|programming|engineer)'
+    - '\bno_std\b'
+  # Si ni el título, ni la ubicación, ni la descripción mencionan el remoto → descartada
+  # (LinkedIn ignora el filtro de remoto y devuelve muchas ofertas presenciales).
+  remote_any:
+    - 'remote'
+    - 'work from home'
+    - 'home.?office'
+    - 'anywhere'
+    - 'distributed (team|company)'
+    - 'fully distributed'
+    - 'telework'
+    - 'teletrabajo'
+    - 'en remoto'
+    - 'mobiles arbeiten'
