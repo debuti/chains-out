@@ -43,4 +43,8 @@ for k in TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID CHAINSOUT_DB_KEY; do
   [ -n "$v" ] || { echo "Falta $k en .env" >&2; exit 1; }
   printf '%s' "$v" | gh secret set "$k" "${repo_args[@]}"
 done
+for k in REDDIT_CLIENT_ID REDDIT_CLIENT_SECRET; do  # opcionales (fuente reddit)
+  v="$(get_env $k)"
+  [ -z "$v" ] || printf '%s' "$v" | gh secret set "$k" "${repo_args[@]}"
+done
 echo "Secrets subidos. Falta CLAUDE_CODE_OAUTH_TOKEN si no lo has puesto ya."

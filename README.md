@@ -6,7 +6,7 @@ Telegram de las que encajan. Uso personal, headless, pensado para ejecutarse cad
 
 ```
 chainsout run
-  1. fetch      LinkedIn/Indeed (JobSpy), HN "Who is hiring", bolsas de nicho, ATS de empresas
+  1. fetch      LinkedIn/Indeed (JobSpy), HN "Who is hiring", hilos de Reddit, bolsas de nicho, ATS de empresas
   2. normalize  modelo Job común, URL canónica, fingerprint empresa+título
   3. dedup      SQLite: URL ya vista → se ignora; misma oferta en otra fuente → "duplicate"
   4. prefilter  reglas baratas de profile.yaml (títulos obvios, part-time, sin keywords de dominio, empresas excluidas)
@@ -130,6 +130,7 @@ fuente de páginas de empresa se salta.
 | LinkedIn | JobSpy (scraping, sin login) | Lo prohíben sus condiciones; bloquea a menudo (429). Volumen bajo |
 | Indeed | JobSpy | Ídem; por país con `is_remote` + `fulltime` |
 | HN Who is hiring | API Algolia | Pública |
+| Reddit (hilos de ofertas, p. ej. r/rust) | API OAuth | Requiere app de Reddit: `REDDIT_CLIENT_ID`/`REDDIT_CLIENT_SECRET` en `.env` (los sube `subir-config.sh`). Cada comentario de primer nivel es una oferta |
 | RemoteOK | `remoteok.com/api` | Pública; piden citar a Remote OK y enlazar a la oferta (el aviso lleva su URL) |
 | Remotive | `remotive.com/api/remote-jobs` | Pública; pocas consultas al día (`min_interval_hours: 8`), no republicar |
 | We Work Remotely | RSS por categoría | Público |
@@ -137,7 +138,7 @@ fuente de páginas de empresa se salta.
 | Greenhouse / Lever / Ashby | APIs JSON públicas de los tableros | Lista de empresas en `companies.yaml` |
 
 Las bolsas generalistas se filtran por título con `boards.keywords` (opcional) de `searches.yaml`;
-HN con `hn.keywords` y las páginas de empresa con `title_regex` de `companies.yaml`.
+HN y Reddit con `hn.keywords`/`reddit.keywords` y las páginas de empresa con `title_regex` de `companies.yaml`.
 
 ## Tests
 

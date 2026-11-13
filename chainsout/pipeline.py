@@ -69,6 +69,11 @@ def _extra_sources():
     except ImportError:
         pass
     try:
+        from .sources import reddit_source
+        out.append(("reddit", reddit_source))
+    except ImportError:
+        pass
+    try:
         from .sources import boards_source
         out.append(("boards", boards_source))
     except ImportError:

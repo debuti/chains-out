@@ -35,6 +35,16 @@ sources:
     previous_thread_grace_days: 10
     # Solo comentarios que mencionen esto (regex); sin keywords pasan todos al prefiltro.
     keywords: '\brust\b|embedded|firmware|bare.?metal|\brtos\b|zephyr|kernel|device drivers?'
+  reddit:
+    # Hilos de ofertas de Reddit (requiere REDDIT_CLIENT_ID/SECRET). r/rust abre uno nuevo con
+    # cada versión de Rust; se lee el último y el anterior durante N días.
+    enabled: true
+    previous_thread_grace_days: 10
+    threads:
+      - subreddit: rust
+        query: hiring
+        title_regex: "who'?s hiring"
+    keywords: '\brust\b|embedded|firmware|bare.?metal|\brtos\b|zephyr|kernel|device drivers?'
   companies:
     # Páginas de empleo de empresas (Greenhouse/Lever/Ashby). Lista en companies.yaml.
     enabled: true
