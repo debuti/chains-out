@@ -1,3 +1,3 @@
 """chainsout: busca ofertas de empleo, las filtra con Claude y avisa por Telegram."""
 
-__version__ = "0.4.1"
+__version__ = "0.13.0"

@@ -97,6 +97,7 @@ def run(
         _print_table(pending)
     else:
         _maybe_weekly_summary(s, db)
+        _release_alerts(s, db)
     db.finish_run(run_id, {k: dict(v) if isinstance(v, Counter) else v for k, v in stats.items()})
 
 
@@ -150,6 +151,7 @@ def notify(dry_run: bool = typer.Option(False, "--dry-run"),
         log.info("notificación: %s", _fmt(c))
         if weekly:
             _maybe_weekly_summary(s, db)
+            _release_alerts(s, db)
 
 
 @app.command()
@@ -249,6 +251,16 @@ def _paused(db) -> bool:
         log.info("en pausa (/reanudar en Telegram para seguir)")
         return True
     return False
+
+
+def _release_alerts(s, db) -> None:
+    from . import release_alerts
+    from .config import load_yaml
+
+    alerts = load_yaml(s.root / "searches.yaml").get("release_alerts")
+    if alerts:
+        n = release_alerts.check(alerts, db, lambda t: pipeline._tg_text(s, t))
+        log.info("avisos de versión: %d", n)
 
 
 WEEKLY_KEY = "weekly_summary_sent_at"

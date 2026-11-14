@@ -116,6 +116,7 @@ jobs:
           CHAINSOUT_CONFIG: ${{ secrets.CHAINSOUT_CONFIG }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: .github/scripts/quiet.sh uv run --no-sync chainsout notify --weekly
 
       - name: Avisar si el token de Claude va a caducar

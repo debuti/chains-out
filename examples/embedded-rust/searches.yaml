@@ -65,3 +65,10 @@ sources:
         enabled: true
         country: Spain        # incluye las abiertas a España (y las worldwide)
         queries: [firmware, embedded, embedded rust, rust, kernel, embedded linux]
+
+# Aviso por Telegram cuando un repo de GitHub publica versión (la primera vez solo la memoriza).
+# r/rust abre un "Who's hiring" nuevo con cada versión de Rust: así sabes cuándo mirarlo.
+release_alerts:
+  - repo: rust-lang/rust
+    tag_regex: '^\d+\.\d+\.0$'
+    message: "🦀 Rust {tag} publicado: r/rust abrirá un Who's hiring nuevo → https://www.reddit.com/r/rust/search/?q=who%27s+hiring&sort=new"

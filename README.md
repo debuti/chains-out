@@ -111,6 +111,10 @@ siguiente ejecución Telegram no confirma la pulsación; es normal.
 El resumen semanal (vistas, prefiltradas y por qué, motivos de descarte del LLM, notificadas,
 feedback) se envía solo cada 7 días desde `run`; `chainsout summary [--send]` lo genera a mano.
 
+`release_alerts` en `searches.yaml` avisa por Telegram cuando un repo de GitHub publica una
+versión que casa con `tag_regex` (p. ej. Rust x.y.0, que es cuando r/rust abre un "Who's hiring"
+nuevo). La primera vez solo memoriza la versión actual.
+
 Tu configuración (`profile.yaml`, `searches.yaml`, `companies.yaml`) es local y está en `.gitignore`;
 en el repo solo van ejemplos, en `examples/` (embedded/Rust en España, frontend en Portugal,
 datos en Alemania, DevOps en México, ML en UK, seguridad en Polonia). Sin `companies.yaml`, la
