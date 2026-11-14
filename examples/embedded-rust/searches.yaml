@@ -38,7 +38,8 @@ sources:
   reddit:
     # Hilos de ofertas de Reddit (requiere REDDIT_CLIENT_ID/SECRET). r/rust abre uno nuevo con
     # cada versión de Rust; se lee el último y el anterior durante N días.
-    enabled: true
+    # Desactivado: Reddit cerró el alta de apps nuevas de su API (oct 2026).
+    enabled: false
     previous_thread_grace_days: 10
     threads:
       - subreddit: rust
