@@ -97,6 +97,7 @@ def run(
         _print_table(pending)
     else:
         _maybe_weekly_summary(s, db)
+        _maybe_heartbeat(s, db)
     db.finish_run(run_id, {k: dict(v) if isinstance(v, Counter) else v for k, v in stats.items()})
 
 
@@ -150,6 +151,7 @@ def notify(dry_run: bool = typer.Option(False, "--dry-run"),
         log.info("notificación: %s", _fmt(c))
         if weekly:
             _maybe_weekly_summary(s, db)
+            _maybe_heartbeat(s, db)
 
 
 @app.command()
@@ -265,6 +267,32 @@ def _maybe_weekly_summary(s, db) -> None:
     if datetime.now() - datetime.fromisoformat(last) >= timedelta(days=7):
         if _send_summary(s, db, 7):
             db.kv_set(WEEKLY_KEY, datetime.now().isoformat(timespec="seconds"))
+
+
+HEARTBEAT_KEY = "heartbeat_sent_at"
+
+
+def _maybe_heartbeat(s, db) -> None:
+    """Aviso diario de "sigo vivo" si en las últimas 24 h no ha salido nada por Telegram."""
+    from datetime import datetime, timedelta
+
+    from .notify_telegram import Telegram, TelegramError
+    from .summary import build_stats, format_heartbeat_html
+
+    if not (s.telegram_token and s.telegram_chat_id):
+        return
+    now = datetime.now()
+    since_last = [db.kv_get(HEARTBEAT_KEY), db.kv_get(WEEKLY_KEY)]
+    if any(v and now - datetime.fromisoformat(v) < timedelta(hours=24) for v in since_last):
+        return
+    st = build_stats(db, 1)
+    if st["notified"]:  # ya te han llegado ofertas: eso ya dice que está vivo
+        return
+    try:
+        Telegram(s.telegram_token, s.telegram_chat_id).send(format_heartbeat_html(st))
+        db.kv_set(HEARTBEAT_KEY, now.isoformat(timespec="seconds"))
+    except TelegramError as e:
+        log.warning("aviso de vida: %s", e)
 
 
 def _send_summary(s, db, days: int) -> bool:

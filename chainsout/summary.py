@@ -72,3 +72,10 @@ def format_weekly_html(st: dict) -> str:
         f"❌ Motivos de descarte: {e(_c(st['hard_fails'], 6))}",
         f"📨 Notificadas: {st['notified']} · 👍/👎: {e(_c(st['feedback']))}",
     ])
+
+
+def format_heartbeat_html(st: dict) -> str:
+    d = st["decisions"]
+    return (f"💓 chainsout sigue vivo: en 24 h, {st['runs']} ejecuciones, {st['total']} ofertas vistas, "
+            f"{sum(d.values())} clasificadas (match {d.get('match', 0)}, maybe {d.get('maybe', 0)}), "
+            f"ninguna para avisarte.")
