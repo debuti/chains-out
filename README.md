@@ -110,8 +110,8 @@ siguiente ejecución Telegram no confirma la pulsación; es normal.
 
 El resumen semanal (vistas, prefiltradas y por qué, motivos de descarte del LLM, notificadas,
 feedback) se envía solo cada 7 días desde `run`; `chainsout summary [--send]` lo genera a mano.
-Si en 24 h no te llega ninguna oferta (ni el resumen), manda un aviso corto de "sigo vivo" con
-las cifras del día, para que se note que sigue funcionando.
+Si en 24 h no te llega ninguna oferta (ni el resumen), manda un "sigo vivo" con las
+estadísticas del resumen pero de las últimas 24 h, para que se note que sigue funcionando.
 
 Tu configuración (`profile.yaml`, `searches.yaml`, `companies.yaml`) es local y está en `.gitignore`;
 en el repo solo van ejemplos, en `examples/` (embedded/Rust en España, frontend en Portugal,

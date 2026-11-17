@@ -75,7 +75,7 @@ def format_weekly_html(st: dict) -> str:
 
 
 def format_heartbeat_html(st: dict) -> str:
-    d = st["decisions"]
-    return (f"💓 chainsout sigue vivo: en 24 h, {st['runs']} ejecuciones, {st['total']} ofertas vistas, "
-            f"{sum(d.values())} clasificadas (match {d.get('match', 0)}, maybe {d.get('maybe', 0)}), "
-            f"ninguna para avisarte.")
+    lines = format_weekly_html(st).split("\n")
+    lines[0] = (f"💓 <b>chainsout sigue vivo</b>: nada que avisarte en 24 h "
+                f"({st['runs']} ejecuciones)")
+    return "\n".join(lines)
