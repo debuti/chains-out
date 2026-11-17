@@ -24,7 +24,7 @@ class FakeTG:
 def cb(uid, data, chat=42):
     return {"update_id": uid, "callback_query": {
         "id": f"q{uid}", "data": data,
-        "message": {"message_id": 7, "chat": {"id": chat}}}}
+        "message": {"message_id": 7, "chat": {"id": chat}, "text": "💼 Oferta"}}}
 
 
 def test_parse_callback():
@@ -46,7 +46,8 @@ def test_poll_saves_and_advances_offset(db):
     assert F.poll(db, tg, "42") == 1  # el de otro chat se ignora
     assert db.kv_get(F.OFFSET_KEY) == "103"
     assert db.conn.execute("SELECT value FROM feedback").fetchall()[0][0] == "interesa"
-    assert any(m == "editMessageReplyMarkup" for m, _ in tg.calls)
+    edits = [kw for m, kw in tg.calls if m == "editMessageText"]
+    assert edits and edits[0]["text"].endswith("👍 Te interesa") and "reply_markup" not in edits[0]
     assert F.poll(db, tg, "42") == 0  # nada nuevo
 
 

@@ -105,7 +105,7 @@ dice cómo está. Se recoge al inicio de la siguiente ejecución. Con `CHAINSOUT
 ### Feedback
 Cada aviso lleva botones `👍 Me interesa` / `👎 No`. No hay webhook ni servidor: las pulsaciones
 se recogen con `getUpdates` al principio de cada `run` (o con `chainsout poll-feedback`), se
-guardan en la tabla `feedback` y los botones del mensaje se sustituyen por lo elegido. Hasta la
+guardan en la tabla `feedback` y el mensaje se edita: se quitan los botones y se añade lo elegido. Hasta la
 siguiente ejecución Telegram no confirma la pulsación; es normal.
 
 El resumen semanal (vistas, prefiltradas y por qué, motivos de descarte del LLM, notificadas,

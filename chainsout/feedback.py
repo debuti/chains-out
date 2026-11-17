@@ -88,10 +88,27 @@ def poll(db: DB, tg: Telegram, chat_id: str) -> int:
 
 
 def _mark_message(tg: Telegram, msg: dict, value: str) -> None:
-    """Sustituye los botones por un único botón con lo elegido (permite ver qué marcaste)."""
+    """Añade al mensaje lo que elegiste y quita los botones.
+
+    Se reutilizan el texto y las entidades (negrita, enlaces) que trae el callback; como lo
+    nuevo va al final, los offsets de las entidades siguen valiendo.
+    """
     label = "👍 Te interesa" if value == "interesa" else "👎 No te interesa"
     try:
-        tg.call("editMessageReplyMarkup", chat_id=msg["chat"]["id"], message_id=msg["message_id"],
-                reply_markup={"inline_keyboard": [[{"text": label, "callback_data": "noop"}]]})
-    except (TelegramError, KeyError):
-        pass
+        chat, mid = msg["chat"]["id"], msg["message_id"]
+    except KeyError:
+        return
+    params = dict(chat_id=chat, message_id=mid, text=f"{msg.get('text', '')}\n\n{label}",
+                  link_preview_options={"is_disabled": True})
+    if msg.get("entities"):
+        params["entities"] = msg["entities"]
+    try:
+        if not msg.get("text"):
+            raise TelegramError("sin texto")
+        tg.call("editMessageText", **params)  # sin reply_markup: desaparecen los botones
+    except TelegramError:
+        try:  # p. ej. mensaje ya editado: al menos quitar los botones
+            tg.call("editMessageReplyMarkup", chat_id=chat, message_id=mid,
+                    reply_markup={"inline_keyboard": []})
+        except TelegramError:
+            pass
