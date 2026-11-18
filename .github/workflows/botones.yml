@@ -1,0 +1,37 @@
+name: botones
+
+# Marca al momento los avisos con 👍/👎 pulsado (quita los botones y añade lo elegido).
+# No toca la base de datos ni confirma las pulsaciones: el feedback lo guarda la ejecución
+# completa (chainsout.yml), que las vuelve a leer.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: botones
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  marcar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: vars.CHAINSOUT_ENABLED != 'false'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
+        with:
+          version: "0.13.7"
+
+      - name: Instalar
+        run: uv sync --frozen --no-dev -q
+
+      - name: Marcar botones pulsados
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: uv run --no-sync chainsout mark-buttons 2>&1 | grep -oE '^[0-9]+ botones marcados' || true

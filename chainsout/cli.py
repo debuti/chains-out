@@ -331,6 +331,24 @@ def poll_feedback():
     typer.echo(f"{_poll_feedback(s, db)} respuestas nuevas")
 
 
+@app.command("mark-buttons")
+def mark_buttons():
+    """Marca al momento los avisos con 👍/👎 pulsado (sin base de datos; el feedback lo guarda `run`)."""
+    _setup_logging()
+    from .feedback import mark_pending
+    from .notify_telegram import Telegram, TelegramError
+
+    s = load_settings()
+    if not (s.telegram_token and s.telegram_chat_id):
+        raise typer.Exit()
+    try:
+        n = mark_pending(Telegram(s.telegram_token, s.telegram_chat_id), s.telegram_chat_id)
+    except TelegramError as e:
+        log.warning("botones: %s", e)
+        n = 0
+    typer.echo(f"{n} botones marcados")
+
+
 @app.command()
 def daemon(every: int = typer.Option(3, help="Cada cuántas horas."),
            start: int = typer.Option(8, help="Primera hora del día."),

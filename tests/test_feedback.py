@@ -76,3 +76,12 @@ def test_pause_commands(tmp_path):
     _command(db, "/reanudar@chainsoutbot")
     assert not is_paused(db)
     assert _command(db, "hola") is None
+
+
+def test_mark_pending_edits_without_db():
+    tg = FakeTG([cb(100, "fb:9:y"), cb(101, "fb:9:n", chat=666), cb(102, "noop"),
+                 {"update_id": 103, "message": {"text": "hola"}}])
+    assert F.mark_pending(tg, "42") == 1
+    edits = [kw for m, kw in tg.calls if m == "editMessageText"]
+    assert len(edits) == 1 and edits[0]["text"].endswith("👍 Te interesa")
+    assert ("answerCallbackQuery", {"callback_query_id": "q100", "text": F.ANSWERS["interesa"]}) in tg.calls

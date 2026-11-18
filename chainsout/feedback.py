@@ -112,3 +112,27 @@ def _mark_message(tg: Telegram, msg: dict, value: str) -> None:
                     reply_markup={"inline_keyboard": []})
         except TelegramError:
             pass
+
+
+def mark_pending(tg: Telegram, chat_id: str) -> int:
+    """Marca ya los mensajes con 👍/👎 pulsado, sin base de datos ni confirmar las pulsaciones.
+
+    Para que el mensaje cambie al momento aunque la ejecución completa (que guarda el
+    feedback y confirma el offset) tarde horas. getUpdates sin offset no confirma nada, así
+    que `poll` las vuelve a ver después; editar dos veces solo da un error que se ignora.
+    """
+    marked = 0
+    for u in tg.get_updates(None):
+        cq = u.get("callback_query") or {}
+        msg = cq.get("message") or {}
+        parsed = parse_callback(cq.get("data", ""))
+        if not parsed or str((msg.get("chat") or {}).get("id")) != str(chat_id):
+            continue
+        value = parsed[1]
+        _mark_message(tg, msg, value)
+        marked += 1
+        try:
+            tg.call("answerCallbackQuery", callback_query_id=cq["id"], text=ANSWERS[value])
+        except TelegramError:
+            pass
+    return marked
