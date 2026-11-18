@@ -50,7 +50,7 @@ def test_schema_is_strict():
 
 def test_prompt_renders_profile(profile):
     system, version = C.load_prompt(profile)
-    assert version == "2" and "full_remote" in system
+    assert version == "3" and "full_remote" in system
     assert not any(x in system for x in ("{profile}", "{bias}", "{score_guide}", "{edge_cases}"))
 
 

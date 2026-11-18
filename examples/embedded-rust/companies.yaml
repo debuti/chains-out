@@ -1,10 +1,17 @@
 # Empresas cuyas páginas de empleo se consultan directamente (APIs JSON públicas del ATS).
-# ats: greenhouse | lever | ashby. token: el identificador de la URL pública del tablero:
+# ats: greenhouse | lever | ashby (y más, abajo). token: el identificador de la URL pública del tablero:
 #   greenhouse → boards.greenhouse.io/<token>   lever → jobs.lever.co/<token>
 #   ashby      → jobs.ashbyhq.com/<token>
 # Se quedan solo las ofertas cuyo título encaja con title_regex (dominio) y publicadas hace
 # menos de max_age_days; las marcadas explícitamente como onsite/hybrid se descartan.
-# Tokens comprobados contra los endpoints reales el 2026-11-12.
+# Más tableros: workable, recruitee, personio, teamtailor (token o host), bamboohr, smartrecruiters,
+#   workday (token: <tenant>.wdN.myworkdayjobs.com/<site>, search: admite OR; ~40 peticiones por
+#   empresa porque Workday corta a unas 60), eightfold (host + token
+#   = dominio, search), amazon (search).
+# ats: page → página propia: url (una o lista), link_regex opcional para los enlaces a ofertas.
+#   Con watch: true se vigila la página entera: cuando cambia su texto (y menciona el dominio)
+#   Claude la lee como una oferta.
+# Tokens comprobados contra los endpoints reales el 2026-11-12 y el 2026-11-18.
 
 max_age_days: 60
 # Opcional; sin title_regex pasan todas al prefiltro.
@@ -27,3 +34,13 @@ companies:
   - {name: Samsara, ats: greenhouse, token: samsara}
   - {name: Skydio, ats: ashby, token: skydio}
   - {name: Flock Safety, ats: ashby, token: flock}
+  # Otros tableros y páginas propias
+  - {name: Lunar Energy, ats: greenhouse, token: lunarenergy}
+  - {name: Trail of Bits, ats: workable, token: trailofbits}
+  - {name: Mullvad VPN, ats: teamtailor, token: mullvad}
+  - {name: NVIDIA, ats: workday, token: nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite, search: 'firmware OR embedded OR kernel OR rust'}
+  - {name: Infineon, ats: eightfold, host: jobs.infineon.com, token: infineon.com, search: [embedded software, firmware]}
+  - {name: Amazon, ats: amazon, search: [embedded rust, firmware]}
+  - {name: Oxide Computer, ats: page, url: 'https://oxide.computer/careers', link_regex: '/careers/[^/?#]+'}
+  - {name: Arm, ats: page, url: ['https://careers.arm.com/search-jobs/firmware/33099/1', 'https://careers.arm.com/search-jobs/rust/33099/1'], link_regex: /job/}
+  - {name: Espressif, ats: page, url: 'https://www.espressif.com/en/join-us/job-search', watch: true}

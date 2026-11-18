@@ -122,7 +122,10 @@ fuente de páginas de empresa se salta.
 - `profile.yaml`: criterios (van tal cual al prompt) y reglas del prefiltro. Es la fuente de verdad.
 - `profile.yaml` → `company_reject`: empresas excluidas (regex contra el nombre de la empresa); se descartan antes del LLM.
 - `searches.yaml`: términos × ubicaciones × fuentes, `hours_old`, pausas.
-- `companies.yaml`: empresas con página de empleo en Greenhouse / Lever / Ashby.
+- `companies.yaml`: empresas cuyas páginas de empleo se leen directamente: tableros con API
+  (Greenhouse, Lever, Ashby, Workable, Recruitee, Personio, Teamtailor, BambooHR, SmartRecruiters,
+  Workday, Eightfold, amazon.jobs) o la página propia (`ats: page`, por enlaces o vigilándola entera
+  con `watch: true`).
 - `chainsout/prompts/classify.md`: prompt del clasificador (si lo cambias, sube `prompt_version`).
 
 ## Fuentes (revisado el 2026-11-12)
@@ -137,7 +140,8 @@ fuente de páginas de empresa se salta.
 | Remotive | `remotive.com/api/remote-jobs` | Pública; pocas consultas al día (`min_interval_hours: 8`), no republicar |
 | We Work Remotely | RSS por categoría | Público |
 | Himalayas | `himalayas.app/jobs/api/search` | Pública, con filtro por país (`country: <país>` incluye las worldwide) |
-| Greenhouse / Lever / Ashby | APIs JSON públicas de los tableros | Lista de empresas en `companies.yaml` |
+| Tableros de empresa (Greenhouse, Lever, Ashby, Workable, Recruitee, Personio, Teamtailor, BambooHR, SmartRecruiters, Workday, Eightfold, amazon.jobs) | APIs JSON/XML/RSS públicas de los tableros | Lista de empresas en `companies.yaml`; Workday y Workable limitan peticiones (se reintenta) |
+| Páginas de empleo propias | Scraping (`ats: page`): JSON-LD JobPosting, enlaces que casan con `link_regex` o la página entera vigilada (`watch`) | Las que montan las ofertas con JavaScript solo sirven en modo `watch` si el texto viene en el HTML |
 
 Las bolsas generalistas se filtran por título con `boards.keywords` (opcional) de `searches.yaml`;
 HN y Reddit con `hn.keywords`/`reddit.keywords` y las páginas de empresa con `title_regex` de `companies.yaml`.

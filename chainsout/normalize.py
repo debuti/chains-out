@@ -60,7 +60,8 @@ def canonical_url(url: str) -> str:
         if m:
             return f"https://linkedin.com/jobs/view/{m.group(1)}"
         host = "linkedin.com"
-    keep = next((v for k, v in _KEEP_QUERY.items() if k in host), set())
+    # chainsout_v: versión de una página de empleo vigilada (ats: page con watch).
+    keep = next((v for k, v in _KEEP_QUERY.items() if k in host), set()) | {"chainsout_v"}
     query = {k: v for k, v in parse_qs(parts.query).items() if k in keep}
     return urlunsplit(("https", host, path, urlencode(query, doseq=True), ""))
 

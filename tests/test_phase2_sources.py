@@ -45,8 +45,8 @@ def test_greenhouse_and_filters(tmp_path, monkeypatch):
         {"title": "Firmware Engineer", "jobUrl": "https://jobs.ashbyhq.com/bee/2",
          "location": "Paris", "workplaceType": "Hybrid", "isListed": True, "publishedAt": NOW},
     ]}
-    c = client({"greenhouse.io/v1/boards/acme": gh, "ashbyhq.com/posting-api/job-board/bee": ab})
-    monkeypatch.setattr(A.httpx, "Client", lambda **kw: c)
+    routes = {"greenhouse.io/v1/boards/acme": gh, "ashbyhq.com/posting-api/job-board/bee": ab}
+    monkeypatch.setattr(A.httpx, "Client", lambda **kw: client(routes))
     st = {"queries": 0, "errors": 0}
     jobs = A.fetch({}, tmp_path, st)
     assert [j.title for j in jobs] == ["Senior Firmware Engineer", "Embedded Rust Developer"]
