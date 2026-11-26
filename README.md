@@ -114,6 +114,9 @@ feedback) se envía solo cada 7 días desde `run`; `chainsout summary [--send]` 
 Si en 24 h no te llega ninguna oferta (ni el resumen), manda un "sigo vivo" con las
 estadísticas del resumen pero de las últimas 24 h, para que se note que sigue funcionando.
 
+Si una fuente falla entera en una pasada (errores y ninguna oferta), avisa en el momento, una sola
+vez, y otra cuando vuelve a funcionar. Pensado sobre todo para Reddit, que depende de Arctic Shift.
+
 Tu configuración (`profile.yaml`, `searches.yaml`, `companies.yaml`) es local y está en `.gitignore`;
 en el repo solo van ejemplos, en `examples/` (embedded/Rust en España, frontend en Portugal,
 datos en Alemania, DevOps en México, ML en UK, seguridad en Polonia). Sin `companies.yaml`, la

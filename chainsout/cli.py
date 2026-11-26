@@ -81,6 +81,8 @@ def run(
         return
     jobs = pipeline.fetch_sources(s, stats["sources"], set(source) if source else None, db)
     _log_sources(stats["sources"])
+    if not dry_run:
+        pipeline.check_source_health(db, s, stats["sources"])
     stats["ingest"] = pipeline.ingest(db, jobs)
     stats["prefilter"] = pipeline.prefilter_new(db, profile)
     stats["classify"] = pipeline.classify_pending(db, s, profile, limit)

@@ -195,6 +195,32 @@ def _update_unavailable(db: DB, s: Settings, state: dict, err, recovered: bool) 
                                            "since": state.get("since") or int(time.time())}))
 
 
+SOURCE_DOWN_KEY = "source_down"
+
+
+def check_source_health(db: DB, s: Settings, stats: dict) -> None:
+    """Avisa por Telegram la primera vez que una fuente falla entera (errores y 0 ofertas) y cuando
+    vuelve. Un fallo parcial (una empresa rota entre muchas) no cuenta."""
+    try:
+        down = set(json.loads(db.kv_get(SOURCE_DOWN_KEY) or "[]"))
+    except ValueError:
+        down = set()
+    before = set(down)
+    for name, st in stats.items():
+        if not isinstance(st, dict) or "errors" not in st:
+            continue
+        failed = st["errors"] > 0 and not st.get("jobs")
+        if failed and name not in down:
+            down.add(name)
+            _tg_text(s, f"⚠️ La fuente {name} ha fallado entera en esta pasada. "
+                        "Te aviso cuando vuelva.")
+        elif not failed and name in down:
+            down.discard(name)
+            _tg_text(s, f"✅ La fuente {name} vuelve a funcionar.")
+    if down != before:
+        db.kv_set(SOURCE_DOWN_KEY, json.dumps(sorted(down)))
+
+
 def _tg_text(s: Settings, text: str) -> None:
     from .notify_telegram import Telegram, TelegramError
 
