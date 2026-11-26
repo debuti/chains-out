@@ -38,12 +38,13 @@ sources:
   reddit:
     # Hilos de ofertas de Reddit (requiere REDDIT_CLIENT_ID/SECRET). r/rust abre uno nuevo con
     # cada versión de Rust; se lee el último y el anterior durante N días.
-    # Desactivado: Reddit cerró el alta de apps nuevas de su API (oct 2026).
-    enabled: false
+    # Se lee de Arctic Shift (archivo público de Reddit): Reddit ya no da API (oct 2026).
+    enabled: true
     previous_thread_grace_days: 10
     threads:
       - subreddit: rust
         query: hiring
+        author: DroidLogician  # mod que abre el hilo; buscar por autor es lo que no da timeout
         title_regex: "who'?s hiring"
     keywords: '\brust\b|embedded|firmware|bare.?metal|\brtos\b|zephyr|kernel|device drivers?'
   companies:

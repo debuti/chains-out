@@ -44,3 +44,9 @@ def test_filters():
     assert r.comment_to_job(c(), "rust", re.compile("golang")) is None
     j = r.comment_to_job(c(body="We are hiring, DM me"), "rust", rx)
     assert j.title == "Oferta en r/rust (ver descripción)"
+
+
+def test_markdown_fields():
+    body = "\\*\\*COMPANY:\\*\\* [Chalk](https://chalk.ai)\n\n**ROLE:** Rust Engineer\n"
+    f = r.parse_fields(body)
+    assert f["company"] == "Chalk" and f["role"] == "Rust Engineer"
